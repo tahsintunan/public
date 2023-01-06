@@ -1,10 +1,9 @@
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import BN from "bn.js";
-import * as Layout from "../utils/layout";
 import { LendingInstruction } from "./instruction";
-
-const BufferLayout = require("buffer-layout");
+import { uint64 } from "../utils/layout";
+import { struct, u8 } from "buffer-layout";
 
 /// Redeem collateral from a reserve in exchange for liquidity.
 ///
@@ -33,10 +32,7 @@ export const redeemReserveCollateralInstruction = (
   transferAuthority: PublicKey,
   solendProgramAddress: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([
-    BufferLayout.u8("instruction"),
-    Layout.uint64("collateralAmount"),
-  ]);
+  const dataLayout = struct([u8("instruction"), uint64("collateralAmount")]);
 
   const data = Buffer.alloc(dataLayout.span);
   dataLayout.encode(

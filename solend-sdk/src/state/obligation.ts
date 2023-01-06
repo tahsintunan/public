@@ -1,9 +1,8 @@
 import { AccountInfo, PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
-import * as Layout from "../utils/layout";
+import { uint64, uint128, publicKey } from "../utils/layout";
 import { LastUpdate, LastUpdateLayout } from "./lastUpdate";
-
-const BufferLayout = require("buffer-layout");
+import { Structure, struct, u8, blob, seq } from "buffer-layout";
 
 export interface Obligation {
   version: number;
@@ -58,41 +57,38 @@ export interface ObligationLiquidity {
   marketValue: BN; // decimals
 }
 
-export const ObligationLayout: typeof BufferLayout.Structure =
-  BufferLayout.struct([
-    BufferLayout.u8("version"),
+export const ObligationLayout: typeof Structure = struct([
+  u8("version"),
 
-    LastUpdateLayout,
+  LastUpdateLayout,
 
-    Layout.publicKey("lendingMarket"),
-    Layout.publicKey("owner"),
-    Layout.uint128("depositedValue"),
-    Layout.uint128("borrowedValue"),
-    Layout.uint128("allowedBorrowValue"),
-    Layout.uint128("unhealthyBorrowValue"),
-    BufferLayout.blob(64, "_padding"),
+  publicKey("lendingMarket"),
+  publicKey("owner"),
+  uint128("depositedValue"),
+  uint128("borrowedValue"),
+  uint128("allowedBorrowValue"),
+  uint128("unhealthyBorrowValue"),
+  blob(64, "_padding"),
 
-    BufferLayout.u8("depositsLen"),
-    BufferLayout.u8("borrowsLen"),
-    BufferLayout.blob(1096, "dataFlat"),
-  ]);
+  u8("depositsLen"),
+  u8("borrowsLen"),
+  blob(1096, "dataFlat"),
+]);
 
-export const ObligationCollateralLayout: typeof BufferLayout.Structure =
-  BufferLayout.struct([
-    Layout.publicKey("depositReserve"),
-    Layout.uint64("depositedAmount"),
-    Layout.uint128("marketValue"),
-    BufferLayout.blob(32, "padding"),
-  ]);
+export const ObligationCollateralLayout: typeof Structure = struct([
+  publicKey("depositReserve"),
+  uint64("depositedAmount"),
+  uint128("marketValue"),
+  blob(32, "padding"),
+]);
 
-export const ObligationLiquidityLayout: typeof BufferLayout.Structure =
-  BufferLayout.struct([
-    Layout.publicKey("borrowReserve"),
-    Layout.uint128("cumulativeBorrowRateWads"),
-    Layout.uint128("borrowedAmountWads"),
-    Layout.uint128("marketValue"),
-    BufferLayout.blob(32, "padding"),
-  ]);
+export const ObligationLiquidityLayout: typeof Structure = struct([
+  publicKey("borrowReserve"),
+  uint128("cumulativeBorrowRateWads"),
+  uint128("borrowedAmountWads"),
+  uint128("marketValue"),
+  blob(32, "padding"),
+]);
 
 export const OBLIGATION_SIZE = ObligationLayout.span;
 
@@ -141,20 +137,18 @@ export const parseObligation = (
     0,
     depositsLen * ObligationCollateralLayout.span
   );
-  const deposits = BufferLayout.seq(
-    ObligationCollateralLayout,
-    depositsLen
-  ).decode(depositsBuffer) as ObligationCollateral[];
+  const deposits = seq(ObligationCollateralLayout, depositsLen).decode(
+    depositsBuffer
+  ) as ObligationCollateral[];
 
   const borrowsBuffer = dataFlat.slice(
     depositsBuffer.length,
     depositsLen * ObligationCollateralLayout.span +
       borrowsLen * ObligationLiquidityLayout.span
   );
-  const borrows = BufferLayout.seq(
-    ObligationLiquidityLayout,
-    borrowsLen
-  ).decode(borrowsBuffer) as ObligationLiquidity[];
+  const borrows = seq(ObligationLiquidityLayout, borrowsLen).decode(
+    borrowsBuffer
+  ) as ObligationLiquidity[];
 
   const obligation = {
     version,

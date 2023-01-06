@@ -1,9 +1,8 @@
 import { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { ReserveConfig } from "../state/reserve";
-import * as Layout from "../utils/layout";
 import { LendingInstruction } from "./instruction";
-
-const BufferLayout = require("buffer-layout");
+import { uint64, publicKey } from "../utils/layout";
+import { struct, u8 } from "buffer-layout";
 
 /// Updates a reserves config and a reserve price oracle pubkeys
 ///
@@ -27,23 +26,23 @@ export const updateReserveConfig = (
   reserveConfig: ReserveConfig,
   solendProgramAddress: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([
-    BufferLayout.u8("instruction"),
-    BufferLayout.u8("optimalUtilizationRate"),
-    BufferLayout.u8("loanToValueRatio"),
-    BufferLayout.u8("liquidationBonus"),
-    BufferLayout.u8("liquidationThreshold"),
-    BufferLayout.u8("minBorrowRate"),
-    BufferLayout.u8("optimalBorrowRate"),
-    BufferLayout.u8("maxBorrowRate"),
-    Layout.uint64("borrowFeeWad"),
-    Layout.uint64("flashLoanFeeWad"),
-    BufferLayout.u8("hostFeePercentage"),
-    Layout.uint64("depositLimit"),
-    Layout.uint64("borrowLimit"),
-    Layout.publicKey("feeReceiver"),
-    BufferLayout.u8("protocolLiquidationFee"),
-    BufferLayout.u8("protocolTakeRate"),
+  const dataLayout = struct([
+    u8("instruction"),
+    u8("optimalUtilizationRate"),
+    u8("loanToValueRatio"),
+    u8("liquidationBonus"),
+    u8("liquidationThreshold"),
+    u8("minBorrowRate"),
+    u8("optimalBorrowRate"),
+    u8("maxBorrowRate"),
+    uint64("borrowFeeWad"),
+    uint64("flashLoanFeeWad"),
+    u8("hostFeePercentage"),
+    uint64("depositLimit"),
+    uint64("borrowLimit"),
+    publicKey("feeReceiver"),
+    u8("protocolLiquidationFee"),
+    u8("protocolTakeRate"),
   ]);
 
   const data = Buffer.alloc(dataLayout.span);

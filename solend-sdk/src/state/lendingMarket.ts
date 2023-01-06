@@ -1,7 +1,6 @@
 import { AccountInfo, PublicKey } from "@solana/web3.js";
-import * as Layout from "../utils/layout";
-
-const BufferLayout = require("buffer-layout");
+import { publicKey } from "../utils/layout";
+import { Structure, struct, u8, blob } from "buffer-layout";
 
 export interface LendingMarket {
   version: number;
@@ -13,18 +12,16 @@ export interface LendingMarket {
   switchboardOracleProgramId: PublicKey;
 }
 
-export const LendingMarketLayout: typeof BufferLayout.Structure =
-  BufferLayout.struct([
-    BufferLayout.u8("version"),
-    BufferLayout.u8("bumpSeed"),
-    Layout.publicKey("owner"),
-    Layout.publicKey("quoteTokenMint"),
-    Layout.publicKey("tokenProgramId"),
-    Layout.publicKey("oracleProgramId"),
-    Layout.publicKey("switchboardOracleProgramId"),
-
-    BufferLayout.blob(128, "padding"),
-  ]);
+export const LendingMarketLayout: typeof Structure = struct([
+  u8("version"),
+  u8("bumpSeed"),
+  publicKey("owner"),
+  publicKey("quoteTokenMint"),
+  publicKey("tokenProgramId"),
+  publicKey("oracleProgramId"),
+  publicKey("switchboardOracleProgramId"),
+  blob(128, "padding"),
+]);
 
 export const LENDING_MARKET_SIZE = LendingMarketLayout.span;
 

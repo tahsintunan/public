@@ -1,13 +1,11 @@
 import BN from "bn.js";
-import * as Layout from "../utils/layout";
+import { uint64 } from "../utils/layout";
+import { Structure, struct, u8 } from "buffer-layout";
 
-const BufferLayout = require("buffer-layout");
-
-export const LastUpdateLayout: typeof BufferLayout.Structure =
-  BufferLayout.struct(
-    [Layout.uint64("slot"), BufferLayout.u8("stale")],
-    "lastUpdate"
-  );
+export const LastUpdateLayout: typeof Structure = struct(
+  [uint64("slot"), u8("stale")],
+  "lastUpdate"
+);
 
 export interface LastUpdate {
   slot: BN;

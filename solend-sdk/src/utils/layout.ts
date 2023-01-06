@@ -1,13 +1,13 @@
 import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 
-const BufferLayout = require("buffer-layout");
+import { blob, struct, u32, offset } from "buffer-layout";
 
 /**
  * Layout for a public key
  */
 export const publicKey = (property = "publicKey"): unknown => {
-  const publicKeyLayout = BufferLayout.blob(32, property);
+  const publicKeyLayout = blob(32, property);
 
   const _decode = publicKeyLayout.decode.bind(publicKeyLayout);
   const _encode = publicKeyLayout.encode.bind(publicKeyLayout);
@@ -27,7 +27,7 @@ export const publicKey = (property = "publicKey"): unknown => {
  * Layout for a 64bit unsigned value
  */
 export const uint64 = (property = "uint64"): unknown => {
-  const layout = BufferLayout.blob(8, property);
+  const layout = blob(8, property);
 
   const _decode = layout.decode.bind(layout);
   const _encode = layout.encode.bind(layout);
@@ -58,7 +58,7 @@ export const uint64 = (property = "uint64"): unknown => {
 };
 
 export const uint128 = (property = "uint128"): unknown => {
-  const layout = BufferLayout.blob(16, property);
+  const layout = blob(16, property);
 
   const _decode = layout.decode.bind(layout);
   const _encode = layout.encode.bind(layout);
@@ -93,12 +93,8 @@ export const uint128 = (property = "uint128"): unknown => {
  * Layout for a Rust String type
  */
 export const rustString = (property = "string"): unknown => {
-  const rsl = BufferLayout.struct(
-    [
-      BufferLayout.u32("length"),
-      BufferLayout.u32("lengthPadding"),
-      BufferLayout.blob(BufferLayout.offset(BufferLayout.u32(), -8), "chars"),
-    ],
+  const rsl = struct(
+    [u32("length"), u32("lengthPadding"), blob(offset(u32(), -8), "chars")],
     property
   );
   const _decode = rsl.decode.bind(rsl);

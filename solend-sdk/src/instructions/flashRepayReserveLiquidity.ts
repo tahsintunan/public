@@ -5,10 +5,9 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 import BN from "bn.js";
-import * as Layout from "../utils/layout";
 import { LendingInstruction } from "./instruction";
-
-const BufferLayout = require("buffer-layout");
+import { uint64 } from "../utils/layout";
+import { struct, u8 } from "buffer-layout";
 
 export const flashRepayReserveLiquidityInstruction = (
   liquidityAmount: number | BN,
@@ -22,10 +21,10 @@ export const flashRepayReserveLiquidityInstruction = (
   userTransferAuthority: PublicKey,
   lendingProgramId: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([
-    BufferLayout.u8("instruction"),
-    Layout.uint64("liquidityAmount"),
-    BufferLayout.u8("borrowInstructionIndex"),
+  const dataLayout = struct([
+    u8("instruction"),
+    uint64("liquidityAmount"),
+    u8("borrowInstructionIndex"),
   ]);
 
   const data = Buffer.alloc(dataLayout.span);

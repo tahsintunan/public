@@ -1,10 +1,9 @@
 import { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { TokenInstruction } from "./instruction";
+import { struct, u8 } from "buffer-layout";
 
-const BufferLayout = require("buffer-layout");
-
-const dataLayout = BufferLayout.struct([BufferLayout.u8("instruction")]);
+const dataLayout = struct([u8("instruction")]);
 
 /**
  * Construct a SyncNative instruction

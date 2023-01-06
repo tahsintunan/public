@@ -4,10 +4,9 @@ import {
   SYSVAR_RENT_PUBKEY,
   TransactionInstruction,
 } from "@solana/web3.js";
-import * as Layout from "../utils/layout";
+import { publicKey } from "../utils/layout";
 import { LendingInstruction } from "./instruction";
-
-const BufferLayout = require("buffer-layout");
+import { struct, u8, blob } from "buffer-layout";
 
 export const initLendingMarketInstruction = (
   owner: PublicKey,
@@ -17,10 +16,10 @@ export const initLendingMarketInstruction = (
   oracleProgramId: PublicKey,
   switchboardProgramId: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([
-    BufferLayout.u8("instruction"),
-    Layout.publicKey("owner"),
-    BufferLayout.blob(32, "quoteCurrency"),
+  const dataLayout = struct([
+    u8("instruction"),
+    publicKey("owner"),
+    blob(32, "quoteCurrency"),
   ]);
 
   const data = Buffer.alloc(dataLayout.span);

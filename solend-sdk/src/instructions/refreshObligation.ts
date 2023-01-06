@@ -1,6 +1,6 @@
 import { PublicKey, TransactionInstruction } from "@solana/web3.js";
-import BufferLayout from "buffer-layout";
 import { LendingInstruction } from "./instruction";
+import { struct, u8 } from "buffer-layout";
 
 /// Refresh an obligation"s accrued interest and collateral and liquidity prices. Requires
 /// refreshed reserves, as all obligation collateral deposit reserves in order, followed by all
@@ -18,7 +18,7 @@ export const refreshObligationInstruction = (
   borrowReserves: PublicKey[],
   solendProgramAddress: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([BufferLayout.u8("instruction")]);
+  const dataLayout = struct([u8("instruction")]);
 
   const data = Buffer.alloc(dataLayout.span);
   dataLayout.encode(

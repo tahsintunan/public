@@ -6,10 +6,9 @@ import {
 } from "@solana/web3.js";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import BN from "bn.js";
-import * as Layout from "../utils/layout";
 import { LendingInstruction } from "./instruction";
-
-const BufferLayout = require("buffer-layout");
+import { uint64 } from "../utils/layout";
+import { struct, u8 } from "buffer-layout";
 
 export const flashBorrowReserveLiquidityInstruction = (
   liquidityAmount: number | BN,
@@ -19,10 +18,7 @@ export const flashBorrowReserveLiquidityInstruction = (
   lendingMarket: PublicKey,
   lendingProgramId: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([
-    BufferLayout.u8("instruction"),
-    Layout.uint64("liquidityAmount"),
-  ]);
+  const dataLayout = struct([u8("instruction"), uint64("liquidityAmount")]);
 
   const data = Buffer.alloc(dataLayout.span);
   dataLayout.encode(

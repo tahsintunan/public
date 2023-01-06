@@ -1,7 +1,6 @@
 import { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { LendingInstruction } from "./instruction";
-
-const BufferLayout = require("buffer-layout");
+import { struct, u8 } from "buffer-layout";
 
 /// Accrue interest and update market price of liquidity on a reserve.
 ///
@@ -18,7 +17,7 @@ export const refreshReserveInstruction = (
   oracle?: PublicKey,
   switchboardFeedAddress?: PublicKey
 ): TransactionInstruction => {
-  const dataLayout = BufferLayout.struct([BufferLayout.u8("instruction")]);
+  const dataLayout = struct([u8("instruction")]);
 
   const data = Buffer.alloc(dataLayout.span);
   dataLayout.encode({ instruction: LendingInstruction.RefreshReserve }, data);

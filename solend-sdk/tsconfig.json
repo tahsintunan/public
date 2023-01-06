@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "commonjs",
+    "target": "ES2015",
+    "module": "ES2015",
     "declaration": true,
     "allowJs": true,
     "isolatedModules": true,
-    "resolveJsonModule": true,
-    "outDir": "./dist",
+    "moduleResolution": "node",
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "removeComments": true,
     "esModuleInterop": true,
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "outDir": "./dist",
+    "typeRoots": ["./types", "./node_modules/@types"],
+    // "sourceMap": true,
+    "inlineSourceMap": true
   },
   "include": ["src/**/*"],
   "exclude": ["src/experimental/*"]
